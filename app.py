@@ -1,13 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from backend.config import LocalDevelopmentConfig
 from backend.models import userdatastore, db, Service, User, ServiceRequest
 from app_security import security, hash_password
 from flask_security import verify_password, roles_accepted
 from flask_restful import Api
 from flask_cors import CORS
-from matplotlib import pyplot as plt
-import matplotlib
-matplotlib.use("Agg")
+
 
 def make_celery(app):
         from backend import celery_config
@@ -103,11 +101,12 @@ api_handler.add_resource(GeneralService, '/api/service')
 api_handler.add_resource(SpecificService, '/api/service/<int:id>')
 
 
-from backend.routes.admin import AdminSearch
-api_handler.add_resource(AdminSearch, '/api/adminsearch')
+from backend.routes.admin import Adminstats
+# api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
+api_handler.add_resource(Adminstats, '/api/adminstats')
 
 
-from backend.routes.service_request import CreateServiceRequest, SpecificServiceRequest, CloseServiceRequest, GetCompletedRequests, GetCustomerRequests, AcceptRequest, GetServiceRequest, RejectRequest
+from backend.routes.service_request import CreateServiceRequest, SpecificServiceRequest, CloseServiceRequest, GetCompletedRequests, GetCustomerRequests, AcceptRequest, GetServiceRequest, RejectRequest, GetAcceptedRequests
 api_handler.add_resource(CreateServiceRequest, '/api/createservicerequest')
 api_handler.add_resource(SpecificServiceRequest, '/api/servicerequest/<int:id>')
 api_handler.add_resource(CloseServiceRequest, '/api/closeservicerequest/<int:id>')
@@ -116,6 +115,7 @@ api_handler.add_resource(GetCustomerRequests, '/api/customerrequest/<int:id>')
 api_handler.add_resource(AcceptRequest, '/api/acceptrequest/<int:id>')
 api_handler.add_resource(RejectRequest, '/api/rejectrequest/<int:id>')
 api_handler.add_resource(GetServiceRequest, '/api/getservicerequest/<int:id>')
+api_handler.add_resource(GetAcceptedRequests, '/api/acceptedrequests/<int:id>')
 
 
 from backend.routes.celery_routes import DailyMail, MonthlyREport, ExportCSV
@@ -123,133 +123,38 @@ api_handler.add_resource(DailyMail, '/api/celery/dailyremainder')
 api_handler.add_resource(MonthlyREport, '/api/celery/monthlyreport')
 api_handler.add_resource(ExportCSV, '/api/celery/createcsv')
 
+@app.route('/adminsearch/<string:query>', methods=['GET'])
+@roles_accepted('admin')
+def search(query):
+    formatted_query = query.replace(" ", "").lower()
+    if formatted_query:
+        print(f"Search query: {formatted_query}")
+        services = db.session.query(Service).filter(Service.name.ilike(f'%{formatted_query}%')).all()
+        users = db.session.query(User).filter(
+            User.fullname.ilike(f'%{formatted_query}%'), 
+            User.roles.any(name='service_professional')
+        ).all()
 
-#--------------------------------------------------------Stats----------------------------------------------------------------
+        service=[]
+        user=[]
 
-@app.route('/showstats')
-def stats():
-    # Count total services, service requests, and users
-    totalservices = db.session.query(Service).count()
-    totalrequests = db.session.query(ServiceRequest).count()
-    totalusers = db.session.query(User).count()
+        for s in services:
+            d={
+                "sid":s.id,
+                "sname":s.name,
+            }
+            service.append(d)
 
-    # Save plots
-    save_charts()
+        for i in users:
+            d={
+                "uid":i.id,
+                "uname":i.fullname
+            }
+            users.append(d)
 
-    # Create the response
-    response = {
-        "totalservices": totalservices,
-        "totalrequests": totalrequests,
-        "totalusers": totalusers,
-    }
+        return make_response({"services":service,"user":user}),200
+    return make_response({"services":[],"user":[]}),200
 
-    return jsonify(response), 200
-
-def save_charts():
-    # Data extraction for charts
-    services = db.session.query(Service).all()
-    user = db.session.query(User).all()
-    requests = db.session.query(ServiceRequest).all()
-
-    types = {}
-    for service in services:
-        if service.name in types:
-            types[service.name] += 1
-        else:
-            types[service.name] = 1
-
-        plt.figure(figsize=(10, 6))
-        plt.pie(types.values(), labels=types.keys(), autopct='%1.1f%%', startangle=140)
-        plt.title('Number of Services')
-        plt.savefig('./instance/stats_images/piechart.png')
-        plt.close()
-
-        # 2. Line Graph: User Book Request Behavior
-    #     data = {'date': [], 'requests': []}
-    #     for req in requests:
-    #         data['date'].append(req.adate)
-    #         data['requests'].append(req.status)
-
-    #     df = pd.DataFrame(data)
-    #     df['date'] = pd.to_datetime(df['date'])
-    #     df = df.groupby('date').size()
-
-    #     plt.figure(figsize=(12, 6))
-    #     plt.plot(df.index, df.values, marker='o', linestyle='-')
-    #     plt.xlabel('Date')
-    #     plt.ylabel('Number of Requests')
-    #     plt.title('User Book Request Behavior Over Time')
-    #     plt.grid(True)
-    #     plt.savefig('../frontend/vue-project/src/assets/behaviour.png')
-    #     plt.close()
-
-    # # 3. Histogram: Book Requests
-    #     status_counts = [req.status for req in requests]
-
-    #     if status_counts:
-    #         plt.figure(figsize=(10, 6))
-    #         plt.hist(status_counts, bins=range(4), edgecolor='black')
-    #         plt.xlabel('Request Status')
-    #         plt.ylabel('Frequency')
-    #         plt.title('Histogram of Book Requests')
-    #         plt.xticks([0, 1, 2], ['Rejected', 'Pending', 'Accepted'])
-    #         plt.grid(True)
-    #         plt.savefig('../frontend/vue-project/src/assets/histo.png')
-    #         plt.close()
-
-    # # 4. Bar Chart: Number of Books per Author
-    # author_book_count = {}
-    # for book in books:
-    #     author_book_count[book.author] = author_book_count.get(book.author, 0) + 1
-    
-    # if author_book_count:
-
-    #     plt.figure(figsize=(12, 8))
-    #     plt.barh(list(author_book_count.keys()), author_book_count.values(), color='skyblue')
-    #     plt.xlabel('Number of Books')
-    #     plt.title('Number of Books per Author')
-    #     plt.gca().invert_yaxis()
-    #     plt.grid(axis='x')
-    #     plt.savefig('../frontend/vue-project/src/assets/bar.png')
-    #     plt.close()
-
-
-# @app.route('/showadminsstats', methods=['GET'])
-# @roles_accepted('admin')
-# def show_admin_stats():
-#     services = Service.query.all()
-#     types = {}
-#     for service in services:
-#         if service.name in types:
-#             types[service.name] += 1
-#         else:
-#             types[service.name] = 1
-
-#     # Generate pie chart
-#     plt.clf()
-#     plt.figure(figsize=(10, 6))
-#     plt.pie(types.values(), labels=types.keys(), autopct='%1.1f%%', startangle=140)
-#     plt.title('Number of Services')
-#     plt.savefig('./frontend/src/assets/stats/piechat.png')
-#     plt.close()
-
-#     # Generate histogram
-#     customer = User.query.filter(User.roles.any(name='customer')).all()
-#     professional = User.query.filter(User.roles.any(name='service_professional')).all()
-#     types = []
-#     for c in customer:
-#         types.append(c.type)
-#     for p in professional:
-#         types.append(p.type)
-#     plt.clf()
-#     plt.title("Active Users")
-#     plt.xlabel("Type of User")
-#     plt.ylabel("Number of Users")
-#     plt.hist(types, color="maroon")
-#     plt.savefig()
-#     plt.close()
-
-#     return "Stats generated successfully!"
 
 with app.app_context():
     db.create_all()

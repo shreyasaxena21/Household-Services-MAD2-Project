@@ -87,8 +87,7 @@ export default {
 
 
             axios
-          .get('http://localhost:5002/api/adminsearch', {
-               search_word : this.search_word
+          .get(`http://localhost:5002/adminsearch/${this.search_word}`, {
           },{
             headers: { Authorization: `${this.token}` },
           })
@@ -126,7 +125,7 @@ export default {
   </script>
   
   <style scoped>
-  .service-table {
+ .service-table {
   width: 100%;
   border-collapse: collapse;
   margin: 0 auto;
@@ -142,18 +141,19 @@ export default {
 }
 
 .service-table th {
-  background-color: #007bff;
+  background-color: #3479ab;
   color: white;
   font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .service-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f6fcfd;
 }
 
 .service-table tr:hover {
-  background-color: #eaf4fd;
+  background-color: #fafbf7;
 }
+
 
   .search{
   display: flex;

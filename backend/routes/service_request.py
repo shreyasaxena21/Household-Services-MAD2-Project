@@ -194,6 +194,38 @@ class GetCustomerRequests(Resource):
             return make_response(jsonify({"message": "No Customer Request found"}), 404)
         return make_response(jsonify({"message": "get all customer requests", "data": data}), 200)
     
+class GetAcceptedRequests(Resource):
+    @roles_accepted('service_professional')
+    def get(self, id):
+        service_request = ServiceRequest.query.filter(ServiceRequest.professional_id == id, or_(ServiceRequest.service_status == "Assigned", ServiceRequest.service_status == "Completed")).all()
+        data = [] 
+        for request in service_request:
+            customer = User.query.get(request.customer_id)
+            customer_name = customer.fullname
+            customer_location = customer.city
+            pincode = customer.pincode
+
+            service = Service.query.get(request.service_id)
+            service_name = service.name
+
+            req = {
+                'id' : request.id,
+                'cust_name' : customer_name,
+                'cust_city' : customer_location,
+                'pincode' : pincode,
+                'service_name' : service_name,
+                'date_of_request' : request.date_of_request,
+                'date_of_completion' : request.date_of_completion,
+                'service_status' : request.service_status,
+                'message' : request.message
+            }
+            data.append(req)
+        print(data)
+        if data == []:
+            return make_response(jsonify({"message": "No Customer Request found"}), 404)
+        return make_response(jsonify({"message": "get all customer requests", "data": data}), 200)
+    
+
 class AcceptRequest(Resource):
     @roles_accepted('service_professional')
     def put(self, id):

@@ -33,6 +33,34 @@
             </tbody>
           </table>
 
+          <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Accepted/Completed Requests</h3>
+          <table class="service-table">
+            <thead>
+              <tr>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Id </th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Customer Name </th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location </th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Pincode </th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Message </th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Date of Completion</th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Status</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="request in accepted_request" :key="request.id">
+                <td>{{ request.id }}</td>
+                <td>{{ request.cust_name }}</td>
+                <td>{{ request.cust_city }}</td>
+                <td>{{ request.pincode }}</td>
+                <td>{{ request.message }}</td>
+                <td>{{ request.date_of_completion }}</td>
+                <td>{{ request.service_status }}</td>
+               
+              </tr>
+            </tbody>
+          </table>
+
     </div>
   </template>
   
@@ -52,6 +80,7 @@ export default{
         customer_request : [],
         customer_request_id : null,
         service_status : null,
+        accepted_request:[],
         name : localStorage.getItem('name')
         
       };
@@ -63,6 +92,7 @@ export default{
         this.$router.push('/login');
       } else {
         this.fetchCustomerRequests();
+        this.fetchAcceptedRequests();
        
       }
     },
@@ -109,7 +139,7 @@ export default{
 
         reject(id){
           axios
-        .delete(`http://localhost:5002//api/rejectrequest/${id}`,{
+        .delete(`http://localhost:5002/api/rejectrequest/${id}`,{
         } ,{
 
           headers: { Authorization: `${this.token}` },
@@ -128,6 +158,24 @@ export default{
         
 
        },
+
+       fetchAcceptedRequests(){
+        axios
+          .get(`http://localhost:5002/api/acceptedrequests/${this.id}`, {
+            headers: { Authorization: `${this.token}` },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              this.accepted_request = response.data.data;
+              
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+       }
 
   },
 

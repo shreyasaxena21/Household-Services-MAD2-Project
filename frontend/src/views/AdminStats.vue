@@ -47,7 +47,7 @@
     methods: {
         adminstats(){
             axios
-            .get('http://localhost:5002/api/showadminsstats',{
+            .get('http://localhost:5002/api/adminstats',{
             headers: { Authorization: `${this.token}` },
           })
           .then((response) => {

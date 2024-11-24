@@ -21,13 +21,13 @@
             <td>{{ serv.time_required }} Hours</td>
             <td>{{ serv.price }}</td>
             <td>
-              <router-link :to="{ name: 'updateService', params: { id: serv.id } }" class="btn btn-update">Update</router-link> 
-              <button v-if="!serv.delete" type="button" @click="deleteservice(serv.id)" class="btn btn-delete">Delete</button>
+              <router-link :to="{ name: 'updateService', params: { id: serv.id } }" id="update">Update</router-link> | 
+              <button v-if="!serv.delete" type="button" @click="deleteservice(serv.id)" id="delete">Delete</button>
             </td>
           </tr>
         </tbody>
-      </table>
-      <router-link to="/addService" class="nav-link btn-style">Add New Service</router-link>
+      </table><br>
+      <router-link to="/addService" id="addservice">Add New Service</router-link>
       <!-- <button type="button" id="addservice"> Add New Service</button> -->
     </div>
   </template>
@@ -132,10 +132,10 @@
 }
 
   
-  .btn-style {
+#update {
   display: inline-block;
   padding: 10px 20px;
-  background-color: rgb(33, 121, 33);
+  background-color: rgb(82, 196, 82);
   color: white;
   text-align: center;
   text-decoration: none;
@@ -145,10 +145,43 @@
   transition: background-color 0.3s ease;
 }
 
-.btn-style:hover {
+#update:hover {
   background-color: green;
 }
+
+#delete {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: rgb(224, 25, 25);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#delete:hover {
+  background-color: rgb(126, 31, 14);
+}
   
+#addservice {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: rgb(3, 120, 3);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#addservice:hover {
+  background-color: rgb(2, 66, 2);
+}
   /* Responsive table */
   @media (max-width: 768px) {
     .service-table {

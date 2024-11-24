@@ -4,9 +4,7 @@
         <h4 style="font-family: Georgia, 'Times New Roman', Times, serif;">A-Z Household Services</h4>
         <router-link to="/" class="nav-link" active-class="active">Home</router-link> |
         <router-link to="/login" class="nav-link" active-class="active">Login</router-link> |
-        <router-link to="/Register" class="nav-link" active-class="active">Register</router-link> |
-        <router-link to="/about" class="nav-link" active-class="active">About</router-link> 
-       
+        <router-link to="/Register" class="nav-link" active-class="active">Register</router-link>
       </div>
     </nav>
     <router-view />
