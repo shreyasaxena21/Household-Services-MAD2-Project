@@ -6,7 +6,7 @@
        
         <router-link to="/service" class="nav-link" active-class="active">Service</router-link> |
         <router-link to="/adminsearch" class="nav-link" active-class="active">Search</router-link> |
-        <router-link to="/" class="nav-link" active-class="active">Summary</router-link> |
+        <router-link to="/adminstats" class="nav-link" active-class="active">Summary</router-link> |
         <a @click="logout" class="nav-link logout">Logout</a> 
 
         
@@ -23,6 +23,7 @@
         localStorage.clear();
         this.$router.push('/login'); // Redirect to login after logging out
       },
+
    },
   };
   </script>
@@ -30,7 +31,7 @@
   <style scoped>
   /* Base styles for the navigation bar */
   .navbar {
-    background-color: #007bff; /* Blue background */
+    background-color: #3479ab; /* Blue background */
     padding: 10px 20px;
     color: white;
     display: flex;
@@ -58,7 +59,7 @@
   }
   
   .nav-link:hover {
-    background-color: #0056b3; /* Darker blue for hover effect */
+    background-color: #c8be63; /* Darker blue for hover effect */
     color: #fff; /* Keep text white on hover */
   }
   

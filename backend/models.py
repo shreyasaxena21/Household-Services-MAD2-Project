@@ -57,6 +57,8 @@ class User(db.Model, UserMixin):
 
 
 
+
+
 class Role(db.Model, RoleMixin):
     __tablename__ = "role"
     id = db.Column(db.Integer, primary_key = True)

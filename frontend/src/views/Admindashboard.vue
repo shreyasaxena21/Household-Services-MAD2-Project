@@ -1,8 +1,10 @@
 <template>
     
-    <div class="dashboard">
+    <div id="dashboard">
       <adminnav></adminnav> 
-      
+      <button type="button" id="export" style="font-family: Georgia, 'Times New Roman', Times, serif;" @click="triggercsv()">Export CSV</button>
+
+        
 
       <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Customers</h3>
       <table class="service-table">
@@ -63,8 +65,8 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Description</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
-            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Documents</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
           </tr>
         </thead>
@@ -74,10 +76,31 @@
             <td>{{ prof.name }}</td>
             <td>{{ prof.email }}</td>
             <td>{{ prof.service_type }}</td>
-            <td>{{ prof.experience }}</td>
-            <td>{{ prof.experience }}</td>
+            <td>{{ prof.description }}</td>
+            <td>{{ prof.experience }} Years</td>
             
             <td><button type="button" id="approve" @click="approve(prof.id)">Approve</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Blocked Users</h3>
+      <table class="service-table">
+        <thead>
+          <tr>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Id</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="u1 in blocked_user" :key="u1.id">
+            <td>{{ u1.id }}</td>
+            <td>{{ u1.name }}</td>
+            <td>{{ u1.email }}</td>
+
+            <td><button type="button" id="unblock" @click="unblock(u1.id)">Unblock</button></td>
           </tr>
         </tbody>
       </table>
@@ -111,6 +134,8 @@
         active_prof_id : null,
         active : null,
         is_approved : null,
+        blocked_user: []
+
       };
     },
     created() {
@@ -122,6 +147,7 @@
         this.fetchUser();
         this.fetchProfessional();
         this.fetchActiveProfessional();
+        this.fetchblockedUsers();
       }
     },
     methods: {
@@ -239,19 +265,67 @@
           .catch((error) => {
             console.log(error);
           });
-      }
-    },
+      },
+      triggercsv(){
+        axios
+        .get('http://localhost:5002/triggerexport',{
+          headers: { Authorization: `${this.token}` },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              alert('You will get the mail soon!')
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
+      unblock(id){
+        axios
+        .put(`http://localhost:5002/api/unblock/${id}`,{
+              active : 1
+        }, { 
+              headers: { Authorization: `${this.token}` }
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                alert("User Unblocked!")
+                location.reload()
+            }
+                
+            })
+            .catch((error) => {
+              console.log('Error approving professional:', error);
+            });
+      },
+
+      fetchblockedUsers(){
+        axios
+        .get('http://localhost:5002/api/getblockedusers',{
+          headers: { Authorization: `${this.token}` },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              this.blocked_user = response.data.data;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      },
+    }
   };
   </script>
   
   <style scoped>
-  /* General styles for the dashboard */
-  .dashboard {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
+  #dashboard {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      height: 100%;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: white;
 }
   
   h1 {
@@ -278,17 +352,17 @@
 }
 
 .service-table th {
-  background-color: #007bff;
+  background-color: #3479ab;
   color: white;
   font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .service-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f6fcfd;
 }
 
 .service-table tr:hover {
-  background-color: #eaf4fd;
+  background-color: #fafbf7;
 }
 
 
@@ -307,7 +381,7 @@
 
 #addservice{
   color: whitesmoke;
-  background-color:#007bff;
+  background-color:#3c79b9;
   border-radius: 5px;
 }
 
@@ -322,6 +396,19 @@
 
 #flag:hover {
   background-color: #b02a37;
+}
+
+#unblock {
+  background-color: #1bab24;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#unblock:hover {
+  background-color: #0d7b14;
 }
 
   /* Responsive table */
@@ -344,5 +431,19 @@
     }
 
   }
+
+  #export {
+  background-color: #ad535c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#export:hover {
+  background-color: #b02a37;
+}
   </style>
   

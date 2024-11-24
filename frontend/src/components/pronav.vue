@@ -5,6 +5,7 @@
         <router-link to="/professionaldashboard" class="nav-link" active-class="active">Home</router-link> |
         <router-link to="/" class="nav-link" active-class="active">Search</router-link> |
         <router-link to="/" class="nav-link" active-class="active">Summary</router-link> |
+        <router-link to="/editprofessionalprofile" class="nav-link" active-class="active">Edit Profile</router-link> |
         <a @click="logout" class="nav-link logout">Logout</a> 
        
       </div>

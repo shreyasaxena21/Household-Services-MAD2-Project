@@ -50,8 +50,8 @@ export default{
             )
             .then(response => {
                 this.message = response.data.message
-                if (response.status == 201){
-                   this.message = response.data,
+                if (response.status == 200){
+                    alert("Updated Successfully!")
                    this.$router.push('/customerdashboard') 
                 }                
             })

@@ -3,9 +3,10 @@ from flask import jsonify, make_response, request
 from flask_security import roles_accepted, current_user
 from backend.models import ServiceRequest, db, Service, User
 from datetime import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
+#--------------------------------------Customer--------------------------------------------------------------
 class CreateServiceRequest(Resource):
     @roles_accepted('customer')
     def post(self):
@@ -36,65 +37,37 @@ class CreateServiceRequest(Resource):
         # If service is not found, return an error response
         return make_response(jsonify({"message": "Service type not found"}), 404)
 
-    @roles_accepted('admin', 'service_professional', 'customer')
-    def get(self):
-        service_request = ServiceRequest.query.filter(or_(ServiceRequest.service_status == "Pending", ServiceRequest.service_status == "Assigned")).all() 
-        data = []
-        for request in service_request:
-            professional = User.query.get(request.professional_id)
-            professional_name = professional.fullname
-
-            service = Service.query.get(request.service_id)
-            service_name = service.name
-                
-
-            req = {
-                    'id': request.id,
-                    'prof_name': professional_name,
-                    'service_name': service_name,
-                    'customer_id' : request.customer_id,
-                    'date_of_request' : request.date_of_request,
-                    'date_of_completion' : request.date_of_completion,
-                    'service_status' : request.service_status,
-                    'message' : request.message,
-                    'remarks' : request.remarks
-                }
-            data.append(req)
-        print(data)
-        if data == []:
-            return make_response(jsonify({"message": "No Service Request found"}), 404)
-        return make_response(jsonify({"message": "get all service requests", "data": data}), 200)
 
 class SpecificServiceRequest(Resource):
-
     @roles_accepted('admin', 'service_professional', 'customer')
     def get(self, id):
-        service_request = ServiceRequest.query.filter_by(id=id).first()
+        service_request = ServiceRequest.query.filter_by(customer_id=id ).all()  
         data = []
+        for request in service_request:
+                professional = User.query.get(request.professional_id)
+                professional_name = professional.fullname
 
-        professional = User.query.get(service_request.professional_id)
-        professional_name = professional.fullname
+                service = Service.query.get(request.service_id)
+                service_name = service.name
+                    
 
-        service = Service.query.get(service_request.service_id)
-        service_name = service.name
-            
+                req = {
+                        'id': request.id,
+                        'prof_name': professional_name,
+                        'service_name': service_name,
+                        'customer_id' : request.customer_id,
+                        'date_of_request' : request.date_of_request,
+                        'date_of_completion' : request.date_of_completion,
+                        'service_status' : request.service_status,
+                        'message' : request.message,
+                        'remarks' : request.remarks
+                    }
+                data.append(req)
+                print(data)
+                if data == []:
+                    return make_response(jsonify({"message": "No Service Request found"}), 404)
+                return make_response(jsonify({"message": "get all service requests", "data": data}), 200)
 
-        req = {
-                'id': service_request.id,
-                'prof_name': professional_name,
-                'service_name': service_name,
-                'customer_id' : service_request.customer_id,
-                'date_of_request' : service_request.date_of_request,
-                'date_of_completion' : service_request.date_of_completion,
-                'service_status' : service_request.service_status,
-                'message' : service_request.message,
-                'remarks' : service_request.remarks
-            }
-        data.append(req)
-        print(data)
-        if data == []:
-            return make_response(jsonify({"message": "No Service Request found"}), 404)
-        return make_response(jsonify({"message": "get all service requests", "data": data}), 200)
     
     @roles_accepted('customer')
     def put(self, id):
@@ -124,7 +97,25 @@ class SpecificServiceRequest(Resource):
         db.session.commit()
         return jsonify({"message": "Updated the specific Service Request", 'id': id})
     
- 
+class GetServiceRequest(Resource):
+    @roles_accepted('customer')
+    def get(self, id):
+        service_request = ServiceRequest.query.filter(ServiceRequest.customer_id == id).first()  
+        
+        req = {
+                'id': service_request.id,
+                'date_of_completion' : service_request.date_of_completion,
+                'service_status' : service_request.service_status,
+                'remarks' : service_request.remarks
+            }
+        
+        if not service_request:
+            return make_response(jsonify({"message" : "No Service found by that id"}), 404)
+        
+        return make_response(jsonify({"message" : "get specific service", "data" : req}), 200)
+    
+               
+
 class CloseServiceRequest(Resource):
     @roles_accepted('customer')
     def put(self, id):
@@ -168,7 +159,9 @@ class GetCompletedRequests(Resource):
         if data == []:
             return make_response(jsonify({"message": "No Service Request found"}), 404)
         return make_response(jsonify({"message": "get all service requests", "data": data}), 200)
-    
+
+
+#-----------------------------------------------------Service Professional------------------------------------------------------   
 class GetCustomerRequests(Resource):
     @roles_accepted('service_professional')
     def get(self, id):
@@ -213,6 +206,16 @@ class AcceptRequest(Resource):
             return jsonify({"message": "Accepted customer request", 'id': id}, 200)
 
 
+# class RejectRequest(Resource):
+#     @roles_accepted('service_professional')
+#     def put(self, id):
+#         data = request.get_json()
+#         service_status = data['service_status']
+#         s_request = ServiceRequest.query.filter_by(id = id).first()
+#         if current_user.has_role('service_professional'):
+#             s_request.service_status = service_status
+#             db.session.commit()
+#             return jsonify({"message": "Accepted customer request", 'id': id}, 200)
     
 
 

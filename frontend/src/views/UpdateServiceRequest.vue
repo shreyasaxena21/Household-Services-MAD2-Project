@@ -51,8 +51,9 @@ export default{
             )
             .then(response => {
                 this.message = response.data.message
-                if (response.status == 201){
+                if (response.status == 200){
                    this.message = response.data,
+                   alert("Updated Successfully!")
                    this.$router.push('/customerdashboard') 
                 }                
             })
@@ -63,7 +64,7 @@ export default{
 
         fetchServiceRequest(){
             axios
-            .get(`http://localhost:5002/api/servicerequest/${this.id}`,
+            .get(`http://localhost:5002/api/getservicerequest/${this.id}`,
             {headers :{Authorization: `${this.token}`},}  
             )
             .then(response => {
@@ -72,7 +73,6 @@ export default{
                    this.service_status = response.data.data.service_status,
                    this.remarks = response.data.data.remarks,
                    console.log(response);
-                   console.log('Service Request: ' +this.service);
                 
                 
             }                

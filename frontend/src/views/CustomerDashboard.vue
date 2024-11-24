@@ -144,7 +144,8 @@ export default{
         console.log('Message:', message);
         console.log('Date of Completion:', date_of_completion);  
         // console.log(`Booking professional with ID: ${professionalId}, Message: ${message}, date_of_completion : ${date_of_completion}`);
-          axios.post('http://localhost:5002/api/createservicerequest', 
+          axios
+          .post('http://localhost:5002/api/createservicerequest', 
             {
               professional_id: professionalId,
               message: message,
@@ -203,7 +204,7 @@ export default{
       },
        fetchServiceRequests(){
         axios
-          .get('http://localhost:5002/api/createservicerequest', {
+          .get(`http://localhost:5002/api/servicerequest/${this.customer_id}`, {
             headers: { Authorization: `${this.token}` },
           })
           .then((response) => {

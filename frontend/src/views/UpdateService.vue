@@ -1,5 +1,6 @@
 <template>
     <div class="dashboard">
+        <adminnav></adminnav>
         <h1>Edit a Service with id: {{ this.id }}</h1>
         <form>
             <input type="text" placeholder="name for the service" v-model="this.name"><br><br>
@@ -15,8 +16,12 @@
 
 <script>
 import axios from 'axios';
+import adminnav from '@/components/adminnav.vue'
 export default{
     name: 'updateService',
+    components:{
+        adminnav
+    },
     data() {
        return{
         name: null,

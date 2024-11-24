@@ -69,7 +69,22 @@ const routes = [
     name : 'adminsearch',
     path: '/adminsearch',
     component : () => import('@/views/AdminSearch.vue')
-  }
+  },
+  {
+    name : 'adminstats',
+    path : '/adminstats',
+    component : () => import('@/views/AdminStats.vue')
+  },
+  {
+    name : 'editcustomerprofile',
+    path: '/editcustomerprofile',
+    component : () => import('@/views/EditCustomerProfile.vue')
+  },
+  {
+    name : 'editprofessionalprofile',
+    path: '/editprofessionalprofile',
+    component : () => import('@/views/EditProfessionallProfile.vue')
+  },
 ]
 
 const router = createRouter({
