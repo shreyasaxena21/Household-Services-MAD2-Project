@@ -116,7 +116,6 @@ export default {
 }
 
 
-
 /* Heading styling */
 h2 {
   margin-bottom: 20px;

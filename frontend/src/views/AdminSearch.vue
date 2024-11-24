@@ -16,7 +16,6 @@
         </li>
       </ul>
       <!-- <p v-else>No results found.</p> -->
-
       
 
         <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Professionals</h3>

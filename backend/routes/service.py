@@ -4,6 +4,7 @@ from flask_security import roles_accepted, current_user
 from backend.models import Service, db
 import os
 
+#-------------------------------------------------Admin---------------------------------------------------------------------
 
 class GeneralService(Resource):
     @roles_accepted('admin')
@@ -59,6 +60,9 @@ class GeneralService(Resource):
                 "id": service.id,  # Correctly use the service object's id
                 "service name": name
             }), 201)
+
+
+#----------------------------------------------------Common-----------------------------------------------------------------
 
     @roles_accepted('admin', 'service_professional', 'customer')
     def get(self):
@@ -129,6 +133,7 @@ class SpecificService(Resource):
         db.session.commit()
         return jsonify({"message": "Updated the specific Service", 'id': id})
     
+    @roles_accepted('admin')
     def delete(self, id):
         service = Service.query.filter_by(id=id).first()
         

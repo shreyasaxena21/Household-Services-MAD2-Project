@@ -1,7 +1,6 @@
 from flask_restful import Resource
 from flask import jsonify, request, make_response
 
-
 class DailyMail(Resource):
     def get(self):
         from backend.task import daily_remainder

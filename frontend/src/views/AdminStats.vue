@@ -16,6 +16,7 @@
     </div>
   </template>
   
+  
   <script>
   import axios from 'axios';
   import adminnav from '../components/adminnav.vue';

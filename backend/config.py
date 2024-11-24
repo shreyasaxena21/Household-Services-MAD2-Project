@@ -12,6 +12,7 @@ class LocalDevelopmentConfig(Config):
     SECURITY_PASSWORD_SALT = 'householdservicesapplicationasecretstring'
     SECRET_KEY = 'asecretkey'
     SECURITY_TOKEN_AUTHENTICATION_HEADER = 'Authorization'
+    
     CACHE_TYPE = 'RedisCache'
     CACHE_REDIS_HOST = 'localhost'
     CACHE_REDIS_PORT = 6379

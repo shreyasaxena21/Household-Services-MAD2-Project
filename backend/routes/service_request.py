@@ -206,16 +206,14 @@ class AcceptRequest(Resource):
             return jsonify({"message": "Accepted customer request", 'id': id}, 200)
 
 
-# class RejectRequest(Resource):
-#     @roles_accepted('service_professional')
-#     def put(self, id):
-#         data = request.get_json()
-#         service_status = data['service_status']
-#         s_request = ServiceRequest.query.filter_by(id = id).first()
-#         if current_user.has_role('service_professional'):
-#             s_request.service_status = service_status
-#             db.session.commit()
-#             return jsonify({"message": "Accepted customer request", 'id': id}, 200)
+class RejectRequest(Resource):
+    @roles_accepted('service_professional')
+    def delete(self, id):
+        s_request = ServiceRequest.query.filter_by(id = id).first()
+        if current_user.has_role('service_professional'):
+            db.session.delete(s_request)
+            db.session.commit()
+            return jsonify({"message": "Rejected customer request", 'id': id}, 200)
     
 
 

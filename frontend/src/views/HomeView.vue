@@ -13,7 +13,6 @@ export default {
   components :{
     homenav
   }
- 
 }
 </script>
 

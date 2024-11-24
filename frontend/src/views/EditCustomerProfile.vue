@@ -41,6 +41,7 @@ created(){
     this.GetCustomer()
 },
 methods: {
+    
     edit(){
         axios
         .put(`http://localhost:5002/api/editcustomer/${this.id}`,

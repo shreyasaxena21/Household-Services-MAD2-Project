@@ -3,6 +3,7 @@ from backend.models import db, userdatastore
 app, api_handler = create_app()
 
 
+
 with app.app_context():
     db.create_all()
     print("created db")

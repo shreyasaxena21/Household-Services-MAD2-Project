@@ -8,9 +8,6 @@
         <router-link to="/editcustomerprofile" class="nav-link" active-class="active">Edit Profile</router-link> |
         <a @click="logout" class="nav-link logout">Logout</a> 
 
- 
-
-       
       </div>
     </nav>
     <router-view />

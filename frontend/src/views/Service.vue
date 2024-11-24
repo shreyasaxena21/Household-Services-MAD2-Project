@@ -102,63 +102,35 @@
   border-radius: 10px;
 }
   
-  .service-table {
-    width: 100%;
-    margin: 20px 0;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .service-table th,
-  .service-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .service-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .service-table td {
-    background-color: #f9f9f9;
-  }
-  
-  .service-table tr:hover td {
-    background-color: #f1f1f1;
-  }
-  
-  .service-table td button,
-  .service-table td a {
-    padding: 6px 12px;
-    text-decoration: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 8px;
-  }
-  
-  .service-table td button {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-  }
-  
-  .service-table td button:hover {
-    background-color: #c0392b;
-  }
-  
-  .service-table td a {
-    background-color: #2ecc71;
-    color: white;
-    text-align: center;
-  }
-  
-  .service-table td a:hover {
-    background-color: #27ae60;
-  }
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.service-table th,
+.service-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.service-table th {
+  background-color: #3479ab;
+  color: white;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.service-table tr:nth-child(even) {
+  background-color: #f6fcfd;
+}
+
+.service-table tr:hover {
+  background-color: #fafbf7;
+}
+
   
   .btn-style {
   display: inline-block;

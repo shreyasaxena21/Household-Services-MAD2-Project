@@ -2,6 +2,7 @@ import csv
 from flask_mail import Message
 
 from app import celery
+
 from backend.celery_task import FlaskTask
 from backend.mailer import mail
 from backend.models import *

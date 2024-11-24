@@ -3,6 +3,7 @@ from app import createApp
 
 app, _, _ = createApp()
 
+
 class FlaskTask(Task):
     def __call__(self, *args, **kwargs):
         with app.app_context():

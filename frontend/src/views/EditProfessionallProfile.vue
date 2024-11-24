@@ -39,6 +39,7 @@ created(){
     this.GetProfessional()
 },
 methods: {
+    
     edit(){
         axios
         .put(`http://localhost:5002/api/editprofessional/${this.id}`,

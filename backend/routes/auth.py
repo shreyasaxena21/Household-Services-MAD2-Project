@@ -170,6 +170,7 @@ class ApproveProfessionals(Resource):
             print(user.is_approved)
             return make_response(jsonify({"message": "Professional approved successfully"}), 200)
     
+    
 class FlagUser(Resource): 
     @roles_accepted('admin')
     def put(self, id):

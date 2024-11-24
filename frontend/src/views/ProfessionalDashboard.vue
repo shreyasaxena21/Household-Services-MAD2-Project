@@ -105,15 +105,33 @@ export default{
           .catch((error) => {
             console.log(error);
           });
-        }
+        },
 
-       },
+        reject(id){
+          axios
+        .delete(`http://localhost:5002//api/rejectrequest/${id}`,{
+        } ,{
 
-       reject(id){
-        console.log("Rejecyed");
+          headers: { Authorization: `${this.token}` },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              alert("Request Accepted!")
+              location.reload()
+              
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         
 
        },
+
+  },
+
+       
 
       //  fetchCompletedRequests(){
       //   axios
@@ -140,6 +158,7 @@ export default{
   
 }
 </script>
+
 
 <style scoped>
 /* Scoped styles for this component */

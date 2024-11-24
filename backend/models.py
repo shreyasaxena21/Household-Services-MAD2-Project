@@ -29,6 +29,7 @@ class User(db.Model, UserMixin):
     experience =  db.Column(db.String, nullable = True)
     profile_docs = db.Column(db.String, nullable = True)
 
+
     #Relationships
     roles = db.relationship('Role', backref = 'bearers', secondary = 'user_roles')
     services = db.relationship('Service', backref='professional')  # Professional services

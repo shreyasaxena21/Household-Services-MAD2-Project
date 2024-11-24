@@ -65,6 +65,7 @@ export default{
             })
         },
 
+        
         fetchService(){
             axios
             .get(`http://localhost:5002/api/service/${this.id}`,

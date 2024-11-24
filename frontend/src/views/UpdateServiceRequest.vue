@@ -13,6 +13,7 @@
     </div>    
 </template>
 
+
 <script>
 import axios from 'axios';
 import custnav from '../components/custnav.vue'

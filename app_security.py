@@ -20,8 +20,6 @@ def raw(text): #to convert the searched word to raw string
         search_word += word.lower()
     return search_word
 
-
-
     # influencer = User.query.filter_by(type="general").all()
     # sponsor = Sponser.query.all()
     # types = []

@@ -3,6 +3,7 @@ from flask import jsonify, request, make_response
 from flask_security import roles_accepted, current_user, auth_required
 from backend.models import *
 
+
 class AdminSearch(Resource):
     @roles_accepted('admin')
     def get(self):

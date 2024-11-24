@@ -107,13 +107,14 @@ from backend.routes.admin import AdminSearch
 api_handler.add_resource(AdminSearch, '/api/adminsearch')
 
 
-from backend.routes.service_request import CreateServiceRequest, SpecificServiceRequest, CloseServiceRequest, GetCompletedRequests, GetCustomerRequests, AcceptRequest, GetServiceRequest
+from backend.routes.service_request import CreateServiceRequest, SpecificServiceRequest, CloseServiceRequest, GetCompletedRequests, GetCustomerRequests, AcceptRequest, GetServiceRequest, RejectRequest
 api_handler.add_resource(CreateServiceRequest, '/api/createservicerequest')
 api_handler.add_resource(SpecificServiceRequest, '/api/servicerequest/<int:id>')
 api_handler.add_resource(CloseServiceRequest, '/api/closeservicerequest/<int:id>')
 api_handler.add_resource(GetCompletedRequests, '/api/completedservicerequest')
 api_handler.add_resource(GetCustomerRequests, '/api/customerrequest/<int:id>')
 api_handler.add_resource(AcceptRequest, '/api/acceptrequest/<int:id>')
+api_handler.add_resource(RejectRequest, '/api/rejectrequest/<int:id>')
 api_handler.add_resource(GetServiceRequest, '/api/getservicerequest/<int:id>')
 
 

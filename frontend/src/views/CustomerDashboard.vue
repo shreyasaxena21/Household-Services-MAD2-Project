@@ -202,6 +202,7 @@ export default{
             console.log(error);
           });
       },
+      
        fetchServiceRequests(){
         axios
           .get(`http://localhost:5002/api/servicerequest/${this.customer_id}`, {
