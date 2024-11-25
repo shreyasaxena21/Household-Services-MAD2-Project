@@ -1,10 +1,16 @@
-from flask import Flask, jsonify, request, make_response
+import io
+from flask import Flask, Response, jsonify, request, make_response
 from backend.config import LocalDevelopmentConfig
 from backend.models import userdatastore, db, Service, User, ServiceRequest
 from app_security import security, hash_password
 from flask_security import verify_password, roles_accepted
 from flask_restful import Api
 from flask_cors import CORS
+
+from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use("Agg")
+import os
 
 
 def make_celery(app):
@@ -101,9 +107,9 @@ api_handler.add_resource(GeneralService, '/api/service')
 api_handler.add_resource(SpecificService, '/api/service/<int:id>')
 
 
-from backend.routes.admin import Adminstats
-# api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
-api_handler.add_resource(Adminstats, '/api/adminstats')
+# from backend.routes.admin import Adminstats
+# # api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
+# api_handler.add_resource(Adminstats, '/api/adminstats')
 
 
 from backend.routes.service_request import CreateServiceRequest, SpecificServiceRequest, CloseServiceRequest, GetCompletedRequests, GetCustomerRequests, AcceptRequest, GetServiceRequest, RejectRequest, GetAcceptedRequests
@@ -154,6 +160,46 @@ def search(query):
 
         return make_response({"services":service,"user":user}),200
     return make_response({"services":[],"user":[]}),200
+
+#--------------------------------------------------------Stats-------------------------------------------------------------
+
+def create_pie_chart(service_counts):
+    """Create and return a pie chart for services."""
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.pie(
+        service_counts.values(),
+        labels=service_counts.keys(),
+        autopct="%1.1f%%",
+        startangle=140,
+    )
+    ax.set_title("Distribution of Services")
+
+    img_io = io.BytesIO()
+    fig.savefig(img_io, format="png")
+    img_io.seek(0)  # Rewind to the beginning of the BytesIO object
+    plt.close(fig)  # Close the plot to free resources
+
+    return img_io
+
+
+def save_charts():
+    """Fetch service data and generate the pie chart."""
+    # Fetch all services from the Service table
+    services = db.session.query(Service).all()
+
+    service_counts = {}
+    for service in services:
+        # Count the occurrence of each service by name
+        service_counts[service.name] = service_counts.get(service.name, 0) + 1
+
+    return create_pie_chart(service_counts)
+
+@app.route("/api/showstats", methods=["GET"])
+def stats():
+    """API endpoint to return the services pie chart."""
+    img_io = save_charts()
+    return Response(img_io, mimetype="image/png")
+
 
 
 with app.app_context():

@@ -71,10 +71,10 @@ const routes = [
     component : () => import('@/views/AdminSearch.vue')
   },
   {
-    name : 'adminstats',
-    path : '/adminstats',
-    component : () => import('@/views/AdminStats.vue')
-  },
+    name: "adminstats",
+    path: "/showadminsstats",
+    component: () => import("@/views/showadminsstats.vue"),
+  },
   {
     name : 'editcustomerprofile',
     path: '/editcustomerprofile',

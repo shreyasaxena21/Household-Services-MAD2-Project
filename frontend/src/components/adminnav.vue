@@ -6,7 +6,7 @@
        
         <router-link to="/service" class="nav-link" active-class="active">Service</router-link> |
         <router-link to="/adminsearch" class="nav-link" active-class="active">Search</router-link> |
-        <router-link to="/adminstats" class="nav-link" active-class="active">Summary</router-link> |
+        <router-link to="/showadminsstats" class="nav-link" active-class="active">Summary</router-link> |
         <a @click="logout" class="nav-link logout">Logout</a> 
       </div>
     </nav>

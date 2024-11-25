@@ -62,18 +62,18 @@ class AdminSearch(Resource):
             
 
 
-class Adminstats(Resource):
-    def get(self):
-        service_requests = ServiceRequest.query.all()
-        types = []
-        for requests in service_requests:
-            types.append(requests.service_status)
-        plt.clf()
-        plt.title("Service Requests")
-        plt.xlabel("Service Status")
-        plt.ylabel("Number of Service Requests")
-        plt.hist(types, color="orange")
-        plt.savefig('instance/stats/hist.png')
+# class Adminstats(Resource):
+#     def get(self):
+#         service_requests = ServiceRequest.query.all()
+#         types = []
+#         for requests in service_requests:
+#             types.append(requests.service_status)
+#         plt.clf()
+#         plt.title("Service Requests")
+#         plt.xlabel("Service Status")
+#         plt.ylabel("Number of Service Requests")
+#         plt.hist(types, color="orange")
+#         plt.savefig('instance/stats/hist.png')
 
         # totalservices = db.session.query(Service).count()
         # totalrequests = db.session.query(ServiceRequest).count()
