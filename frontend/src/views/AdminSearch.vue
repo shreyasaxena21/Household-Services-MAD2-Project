@@ -1,3 +1,4 @@
+
 <template>
     <div class="dashboard">
         <adminnav></adminnav>
@@ -6,19 +7,30 @@
             <input type="text" v-model="this.search_word" class="input" placeholder="Search a professional"/><button class="search-button" @click="search()">Search</button>
         </form><br><br>
         <h2 v-if="search_word">Search Results for "{{ search_word }}"</h2>
-      <ul v-if="results && results.length">
-        <li v-for="result in results" :key="result.professional_id">
-          <strong>Service:</strong> {{ result.service_name }}<br />
-          <strong>Professional:</strong> {{ result.professional_name }}<br />
-          <strong>Email:</strong> {{ result.professional_email }}<br />
-          <strong>Experience:</strong> {{ result.professional_experience }} years<br />
-          <hr />
-        </li>
-      </ul>
+        <table v-if="results && results.length" class="service-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Professional Name</th>
+              <th>Email</th>
+              <th>Loaction</th>
+              <th>Experience</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="result in results" :key="result.id">
+              <td>{{ result.service_type }}</td>
+              <td>{{ result.name }}</td>
+              <td>{{ result.email }}</td>
+              <td>{{ result.location }}</td>
+              <td>{{ result.experience }} years</td>
+            </tr>
+          </tbody>
+        </table>
       <!-- <p v-else>No results found.</p> -->
       
 
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Professionals</h3>
+       <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Professionals</h3>
       <table class="service-table">
         <thead>
           <tr>
@@ -26,6 +38,7 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Type</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
 
@@ -37,9 +50,34 @@
             <td>{{ active.name }}</td>
             <td>{{ active.email }}</td>
             <td>{{ active.service_type }}</td>
+            <td>{{ active.location }}</td>
             <td>{{ active.experience }} Years</td>
 
             <td><button type="button" id="flag" @click="block(active.id)">Block</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-family: Georgia, 'Times New Roman', Times, serif;">Blocked Users</h3>
+      <table class="service-table">
+        <thead>
+          <tr>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Id</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="u1 in blocked_user" :key="u1.id">
+            <td>{{ u1.id }}</td>
+            <td>{{ u1.name }}</td>
+            <td>{{ u1.email }}</td>
+            <td>{{ u1.location }}</td>
+
+
+            <td><button type="button" id="unblock" @click="unblock(u1.id)">Unblock</button></td>
           </tr>
         </tbody>
       </table>
@@ -66,7 +104,8 @@ export default {
         results: [], 
         token: null,
         active_prof:[],
-        active_prof_id : null
+        active_prof_id : null,
+        blocked_user: []
       };
     },
 
@@ -75,27 +114,32 @@ export default {
         if (!this.token) { 
           this.$router.push('/login');
         } else{
-            
+            console.log(this.token);
+            this.fetchblockedUsers()
             this.fetchActiveProfessional()
         }
     },
 
     methods: {
         search(){
-            if (!this.search_word) {
+          if (!this.search_word) {
           alert("Please enter a search term.");
           }
-
 
             axios
           .get(`http://localhost:5002/api/adminsearch/${this.search_word}`, {
           },{
-            headers: { Authorization: `Bearer ${this.token}` },
+            headers: { Authorization: `${this.token}` },
           })
           .then((response) => {
             if (response.status === 200) {
-              this.results = response.data.data;
-              console.log('result:', this.result);
+              this.results = response.data.result;
+              console.log('result:', this.results);
+
+            if(this.results.length===0){
+              alert("No User found!")
+              location.reload()
+            }
             }
           })
           .catch((error) => {
@@ -117,7 +161,60 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-      }
+      },
+
+      fetchblockedUsers(){
+        axios
+        .get('http://localhost:5002/api/getblockedusers',{
+          headers: { Authorization: `${this.token}` },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              this.blocked_user = response.data.data;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      },
+
+      unblock(id){
+        axios
+        .put(`http://localhost:5002/api/unblock/${id}`,{
+              active : 1
+        }, { 
+              headers: { Authorization: `${this.token}` }
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                alert("User Unblocked!")
+                location.reload()
+            }
+                
+            })
+            .catch((error) => {
+              console.log('Error approving professional:', error);
+            });
+      },
+
+      block(id){
+        axios
+        .put(`http://localhost:5002/api/flaguser/${id}`,{
+              active : 0
+        }, { 
+              headers: { Authorization: `${this.token}` }
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                console.log('Professional approved:', response);}
+                alert("User Blocked!")
+                location.reload()
+            })
+            .catch((error) => {
+              console.log('Error approving professional:', error);
+            });
+      },
       
     }
   }
@@ -240,5 +337,21 @@ export default {
 #flag:hover {
   background-color: #b02a37;
 }
+
+#unblock {
+  background-color: #1bab24;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#unblock:hover {
+  background-color: #0d7b14;
+}
+
+
+
   </style>
-  
+ 

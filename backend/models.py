@@ -9,6 +9,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key = True)
     fullname = db.Column(db.String)
+    search_name = db.Column(db.String, nullable = False, default="null")
     email = db.Column(db.String, unique = True, nullable = False)
     password = db.Column(db.String, nullable = False)
     fs_uniquifier = db.Column(db.String, unique = True, nullable = False)
@@ -27,7 +28,7 @@ class User(db.Model, UserMixin):
     description = db.Column(db.String, nullable = True)
     service_type = db.Column(db.String, nullable = True)
     experience =  db.Column(db.String, nullable = True)
-    profile_docs = db.Column(db.String, nullable = True)
+    location = db.Column(db.String, nullable = True)
 
 
     #Relationships
@@ -80,6 +81,7 @@ class Service(db.Model):
     __tablename__ = "service"
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, unique=True)
+    search_name = db.Column(db.String, nullable = False, default="null")
     price = db.Column(db.Float, nullable = True)
     time_required = db.Column(db.Integer, nullable = True) # Time in hours
     description = db.Column(db.String, nullable = True)

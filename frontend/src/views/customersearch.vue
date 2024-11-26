@@ -2,19 +2,34 @@
     <div class="dashboard">
         <custnav></custnav>
 
-        <form class="search" @submit.prevent="search">
-            <input type="text" v-model="this.search_word" class="input" placeholder="Search by location, service type"/><button class="search-button" @click="search()">Search</button>
-        </form><br><br>
+        <div class="search-container">
+          <form @submit.prevent="search">
+            <input type="text" v-model="search_by_loc" class="input" placeholder="Search by location"/>
+            <input type="text" v-model="search_by_service_type" class="input" placeholder="Search by service type"/>
+            <button class="search-button" type="submit">Search</button>
+          </form>
+        </div>
         <h2 v-if="search_word">Search Results for "{{ search_word }}"</h2>
-      <ul v-if="results && results.length">
-        <li v-for="result in results" :key="result.professional_id">
-          <strong>Service:</strong> {{ result.service_name }}<br />
-          <strong>Professional:</strong> {{ result.professional_name }}<br />
-          <strong>Email:</strong> {{ result.professional_email }}<br />
-          <strong>Experience:</strong> {{ result.professional_experience }} years<br />
-          <hr />
-        </li>
-      </ul>
+        <table v-if="results && results.length" class="service-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Professional Name</th>
+              <th>Email</th>
+              <th>Location</th>
+              <th>Experience</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="result in results" :key="result.id">
+              <td>{{ result.service_type }}</td>
+              <td>{{ result.name }}</td>
+              <td>{{ result.email }}</td>
+              <td>{{ result.location }}</td>
+              <td>{{ result.experience }} years</td>
+            </tr>
+          </tbody>
+        </table>
       <!-- <p v-else>No results found.</p> -->
       
 
@@ -25,6 +40,7 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Id</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Type</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
 
@@ -35,6 +51,7 @@
             <td>{{ active.id }}</td>
             <td>{{ active.name }}</td>
             <td>{{ active.email }}</td>
+            <td>{{ active.location }}</td>
             <td>{{ active.service_type }}</td>
             <td>{{ active.experience }} Years</td>
 
@@ -47,7 +64,7 @@
     </div>
   </template>
   
-  <script>
+<script>
 import axios from 'axios';
 import custnav from '../components/custnav.vue'
   
@@ -60,11 +77,13 @@ export default {
 
     data() {
       return {
-        search_word: null, 
+        search_by_loc: null, 
+        search_by_service_type : null,
         results: [], 
         token: null,
         active_prof:[],
-        active_prof_id : null
+        active_prof_id : null,
+        search_word : null
       };
     },
 
@@ -80,26 +99,46 @@ export default {
 
     methods: {
         search(){
-            if (!this.search_word) {
-          alert("Please enter a search term.");
-          }
+          if (!this.search_by_loc && !this.search_by_service_type) {
+          alert("Please enter a location or service type to search.");
+          return;
+        }
 
+        this.search_word = this.search_by_loc || this.search_by_service_type;
 
-            axios
-          .get(`http://localhost:5002/api/adminsearch/${this.search_word}`, {
-          },{
-            headers: { Authorization: `Bearer ${this.token}` },
+  
+        let query = '';
+        if (this.search_by_loc) {
+          query = `${this.search_by_loc}`; // Query for location
+        } else if (this.search_by_service_type) {
+          query = `${this.search_by_service_type}`; // Query for service type
+        }
+
+        // Call API to fetch search results based on the query
+        this.fetchSearchResults(query);
+      },
+
+      // Method to fetch search results based on query
+      fetchSearchResults(query) {
+        axios
+          .get(`http://localhost:5002/api/custsearch/${query}`, {
+            headers: { Authorization: `${this.token}` }, // Add token in Authorization header
           })
           .then((response) => {
             if (response.status === 200) {
-              this.results = response.data.data;
-              console.log('result:', this.result);
+              this.results = response.data.result; // Store results in the 'results' array
+              console.log('Search results:', this.results);
+
+              if(this.results.length===0){
+              alert("No User found!")
+              location.reload()
+            }
             }
           })
           .catch((error) => {
-            console.log(error);
+            console.log("Error fetching search results:", error);
           });
-      },
+    },
 
       fetchActiveProfessional(){
         axios
@@ -136,7 +175,13 @@ export default {
       background-position: center; 
       background-size: contain;
 
-      
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Add space between the search bars */
+  margin-top: 30px;
 }
 
 .service-table {

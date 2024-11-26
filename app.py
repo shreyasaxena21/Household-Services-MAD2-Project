@@ -85,7 +85,7 @@ def triggerexport():
 
 #---------------------------------------Regsitering API Endpoints-----------------------------------------------------------
 
-from backend.routes.auth import Login, Register, Logout, GetUsers, GetProfessionals, ApproveProfessionals, FlagUser, GetActiveProf, GetSpecificCustomer,GetSpecificProfessional, EditCustomerProfile, EditProfessionalProfile, Unblock, Getblockedusers, AdminSearch
+from backend.routes.auth import Login, Register, Logout, GetUsers, GetProfessionals, ApproveProfessionals, FlagUser, GetActiveProf, GetSpecificCustomer,GetSpecificProfessional, EditCustomerProfile, EditProfessionalProfile, Unblock, Getblockedusers, AdminSearch, CustSearch
 api_handler.add_resource(Login, '/api/login')
 api_handler.add_resource(Register, '/api/register')
 api_handler.add_resource(Logout, '/api/logout')
@@ -100,7 +100,8 @@ api_handler.add_resource(GetSpecificProfessional, '/api/getprofessional/<int:id>
 api_handler.add_resource(EditCustomerProfile, '/api/editcustomer/<int:id>')
 api_handler.add_resource(EditProfessionalProfile, '/api/editprofessional/<int:id>')
 api_handler.add_resource(Getblockedusers, '/api/getblockedusers')
-api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
+api_handler.add_resource(AdminSearch, '/api/adminsearch/<search_word>')
+api_handler.add_resource(CustSearch, '/api/custsearch/<search_word>')
 
 
 
@@ -335,7 +336,8 @@ with app.app_context():
             "description": "Repairing of AC",
             "time_required": 2,
             "image": "Null",
-            "prof_id" : 3
+            "prof_id" : 3,
+            "search_name" : "acrepairing"
         },
         {
             "name": "Home Cleaning",
@@ -343,7 +345,8 @@ with app.app_context():
             "description": "Cleaning Services",
             "time_required": 4,
             "image": "Null",
-            "prof_id" : 3
+            "prof_id" : 3,
+            "search_name" : "homecleaning"
         },
         {
             "name": "Plumbing Services",
@@ -351,7 +354,8 @@ with app.app_context():
             "description": "Plumbing Services",
             "time_required": 5,
             "image": "Null",
-            "prof_id" : 3
+            "prof_id" : 3,
+            "search_name" : "plumbingservices"
         },
         {
             "name": "Electrical Services",
@@ -359,7 +363,8 @@ with app.app_context():
             "description": "Electrical Services",
             "time_required": 3,
             "image": "Null",
-            "prof_id" : 3
+            "prof_id" : 3,
+            "search_name" : "electricalservices"
         },
     ]
 

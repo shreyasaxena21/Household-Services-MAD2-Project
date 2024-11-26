@@ -14,6 +14,7 @@
                 <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
                 <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
                 <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Type</th>
+                <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th>
                 <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
                 <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
 
@@ -25,6 +26,7 @@
                 <td>{{ active.name }}</td>
                 <td>{{ active.email }}</td>
                 <td>{{ active.service_type }}</td>
+                <td>{{ active.location }}</td>
                 <td>{{ active.experience }}</td>
                 <td>
                   <input type="text" v-model="active.message" placeholder="Enter details" style="margin-right: 8px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;"/>

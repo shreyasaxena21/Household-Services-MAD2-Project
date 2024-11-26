@@ -4,7 +4,7 @@
   <div id="home">
       <div id="welcome">
         <h1>Welcome to A-Z Household Services App!</h1>
-        <h2>
+        
           <h3>
            Introducing A-Z Household Services, your ultimate solution for all home maintenance and servicing needs!  A multi-user app that acts as a platform for providing comprehensive home servicing and solutions. This multi-user app connects homeowners with trusted and skilled professionals, providing a seamless platform for efficient and reliable home services.
            Whether you're looking for a plumber, electrician, cleaner, or handyman, A-Z Household Services has you covered. Our app simplifies the process of finding and booking top-rated service providers in your area, ensuring your home is always in perfect shape.
@@ -21,7 +21,7 @@
           </h3>
 
 
-        </h2>
+        
       </div>
     </div>
   </div>
@@ -79,7 +79,7 @@ h1{
 
 }
 
-h2 h3 {
+ h3 {
   color: rgb(60, 60, 60);
   font-size: 1.2rem;
   line-height: 1.5;

@@ -32,6 +32,8 @@ class GeneralService(Resource):
         professional_id = data.get('professional_id')
         
         image = request.files['img']
+
+        search_name = raw(name)
         
         # Check if the user has the admin role
         if current_user.has_role('admin'):
@@ -41,7 +43,9 @@ class GeneralService(Resource):
                 price=price, 
                 time_required=time_required, 
                 description=description,
-                prof_id = professional_id
+                prof_id = professional_id,
+                search_name = search_name
+
 
             )
        
@@ -144,4 +148,10 @@ class SpecificService(Resource):
             return jsonify({"message": "delete specific service", 'id': id}, 200)
        
         
-       
+    
+def raw(text): #to convert the searched word to raw string
+    split_list = text.split() #converts to a list
+    search_word = ''
+    for word in split_list:
+        search_word += word.lower()
+    return search_word

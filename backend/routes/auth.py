@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import jsonify, make_response, request
-from flask_security import verify_password, roles_accepted, current_user, logout_user, hash_password, login_required
+from flask_security import verify_password, roles_accepted, current_user, logout_user, hash_password
 from backend.models import userdatastore, db, Role,User
 
 #-----------------------------------------------Login--------------------------------------------------------------
@@ -65,13 +65,13 @@ class Register(Resource):
         if user:
             return make_response(jsonify({"message": "user already present", "email": user.email}), 400)
         
-        user = userdatastore.create_user(email=email, password=hash_password(password), fullname = name,  city = city, pincode = pincode, mobile_no = mobileNo, description = description, service_type = serviceType, experience = experience, is_approved=1)  
+        user = userdatastore.create_user(email=email, password=hash_password(password), fullname = name, search_name = raw(name) , city = city, pincode = pincode, mobile_no = mobileNo, description = description, service_type = serviceType, experience = experience, is_approved=1)  
         
         if role == 'service_professional':
             userdatastore.deactivate_user(user)
             userdatastore.add_role_to_user(user, 'service_professional')
             user.is_approved = 0
-            user.city = location
+            user.location = location
             # userdatastore.add_role_to_user(user, 'customer')
         userdatastore.add_role_to_user(user, role)
         db.session.commit()
@@ -129,6 +129,7 @@ class Getblockedusers(Resource):
                     'id': users.id,
                     'name': users.fullname,
                     'email': users.email,
+                    'location' : users.location
                 }
             data.append(user1)
         print(data)
@@ -149,7 +150,7 @@ class GetProfessionals(Resource):
                     'service_type' : user.service_type,
                     'experience' : user.experience,
                     'description' : user.description,
-                    'location' : user.city
+                    'location' : user.location
                 }
             data.append(user1)
         print(data)
@@ -198,36 +199,26 @@ class Unblock(Resource):
     
 
 class AdminSearch(Resource):
-    @roles_accepted('admin')
-    def get(self,query):
-        # formatted_query = query.replace(" ", "").lower()
-        search = "%{}%".format(query)
-        if search:
-            print(search)
-            # services = Service.query.filter(Service.name.like(search)).all()
-            users = User.query.filter(User.fullname.like(search), User.roles.any(name='service_professional')).all()
-
-            searched_user=[]
-
-            # for service in services:
-            #     d={
-            #         "sid":service.id,
-            #         "sname":service.name,
-            #     }
-            #     service.append(d)
-
-            for user in users:
-                d={
-                    "id": user.id,
-                    "name":user.fullname,
-                    "service_type" : user.service_type 
-                }
-                searched_user.append(d)
-                return make_response(jsonify({"user":searched_user}),200)
-            return make_response(jsonify({"user":[]}),200)
-    
-     
-
+    # @roles_accepted('admin')
+    def get(self, search_word):
+        # data = request.get_json()
+        # search_word = data['search_word']
+        search_word = "%" + raw(search_word) + "%"
+        search_name = "%" + search_word.lower() + "%"
+        results =User.query.filter(User.fullname.like(search_name), User.roles.any(name='service_professional')).all()
+        data = []
+        for prof in results:
+            req = {
+                'id': prof.id,
+                'name': prof.fullname,
+                'email': prof.email,
+                'service_type': prof.service_type,
+                'experience': prof.experience,
+                'location' : prof.location
+            }
+            data.append(req)
+ 
+        return make_response(jsonify({"message" : "Got the professionals", "result" : data}), 200)
     
 #-----------------------------------------------Customer--------------------------------------------------------------
 
@@ -265,6 +256,39 @@ class EditCustomerProfile(Resource):
         db.session.commit()
         return jsonify({"message": "Updated the specific customer", 'id': id})
     
+
+class CustSearch(Resource):
+    # @roles_accepted('admin')
+    def get(self, search_word):
+        # data = request.get_json()
+        # search_word = data['search_word']
+        search_word = "%" + raw(search_word) + "%"
+        search_name = "%" + search_word.lower() + "%"
+        location = User.query.filter(User.location.like(search_name), User.roles.any(name='service_professional')).all()
+        name = User.query.filter(User.service_type.like(search_name), User.roles.any(name='service_professional')).all()
+        results = location + name
+
+        # Remove duplicates by converting to a set of IDs
+        unique_results = {prof.id: prof for prof in results}.values()
+
+        # Prepare the response data
+        data = []
+        for prof in unique_results:
+            req = {
+                'id': prof.id,
+                'name': prof.fullname,
+                'email': prof.email,
+                'service_type': prof.service_type,
+                'experience': prof.experience,
+                'location': prof.location
+            }
+            data.append(req)
+
+        # Return the results
+        return make_response(jsonify({
+            "message": "Got the professionals",
+            "result": data
+        }), 200)
 
 #-----------------------------------------------Service Professional--------------------------------------------------------------
 
@@ -308,7 +332,7 @@ class GetSpecificProfessional(Resource):
                 'email': user.email,
                 'service_type' : user.service_type,
                 'experience' : user.experience,
-                'location' : user.city
+                'location' : user.location
             }
         if not user:
             return make_response(jsonify({"message" : "No User found by that id"}), 404)
@@ -348,7 +372,7 @@ class GetActiveProf(Resource):
                     'service_type' : users.service_type,
                     'experience' : users.experience,
                     'date_created' : users.date_created,
-                    # 'location' : user.city
+                    'location' : users.location
                     
                 }
             data.append(user1)
@@ -358,3 +382,11 @@ class GetActiveProf(Resource):
         return make_response(jsonify({"message": "get all professionals", "data": data}), 200)
 
 
+
+
+def raw(text): #to convert the searched word to raw string
+    split_list = text.split() #converts to a list
+    search_word = ''
+    for word in split_list:
+        search_word += word.lower()
+    return search_word

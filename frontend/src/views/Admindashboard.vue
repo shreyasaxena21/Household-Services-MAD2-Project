@@ -40,7 +40,7 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Type</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
-            <!-- <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th> -->
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
 
           </tr>
@@ -52,7 +52,7 @@
             <td>{{ active.email }}</td>
             <td>{{ active.service_type }}</td>
             <td>{{ active.experience }}</td>
-            <!-- <td>{{ active.location }}</td> -->
+            <td>{{ active.location }}</td>
 
             <td><button type="button" id="flag" @click="block(active.id)">Block</button></td>
           </tr>
@@ -67,6 +67,7 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Name</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service</th>
+            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Description</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
@@ -78,6 +79,7 @@
             <td>{{ prof.name }}</td>
             <td>{{ prof.email }}</td>
             <td>{{ prof.service_type }}</td>
+            <td>{{ prof.location }}</td>
             <td>{{ prof.description }}</td>
             <td>{{ prof.experience }} Years</td>
             
