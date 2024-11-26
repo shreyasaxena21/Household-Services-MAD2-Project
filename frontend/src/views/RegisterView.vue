@@ -32,6 +32,7 @@
           <input type="text" v-model="service_professionalData.experience" placeholder="Experience" required />
           <input type="text" v-model="service_professionalData.serviceType" placeholder="Service Type" required />
           <input type="text" v-model="service_professionalData.description" placeholder="Description" required />
+          <input type="text" v-model="service_professionalData.location" placeholder="Loaction" required />
           <!-- <input type="file" @change="addFile"> -->
 
 
@@ -67,6 +68,7 @@ export default {
         experience: null ,
         serviceType: null ,
         description: null ,
+        location : null,
         // image : null
       }
     };
@@ -97,6 +99,7 @@ export default {
             formData.append('experience', this.service_professionalData.experience)
             formData.append('serviceType', this.service_professionalData.serviceType)
             formData.append('description', this.service_professionalData.description)
+            formData.append('location', this.service_professionalData.location)
             formData.append('documents', this.service_professionalData.documents)
             // formData.append('image', this.service_professionalData.image)
       
@@ -123,7 +126,7 @@ export default {
 
 .panel{
   height: 750px;
-  background-image: url('https://png.pngtree.com/background/20230615/original/pngtree-cleaning-tools-and-cleaning-supplies-on-table-under-wooden-fence-picture-image_3543018.jpg');
+  background-image: url('@/assets/register.jpg');
   background-position: center; 
   background-size: contain;
   background-repeat: no-repeat;

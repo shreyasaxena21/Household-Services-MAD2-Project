@@ -1,6 +1,7 @@
 <template>
+    <div class="dashboard">
     <custnav></custnav>
-    <div >
+    <div class="form">
         <h1>Edit Customer with id: {{ this.id }}</h1>
         <form>
             <input type="text" placeholder="Customer name" v-model="this.name"><br><br>
@@ -11,7 +12,8 @@
             <button type="button" id="cancel" @click="cancel()"> Cancel</button>
         </form>
         {{ this.message }}
-    </div>    
+    </div> 
+    </div>   
 </template>
 
 <script>
@@ -98,13 +100,27 @@ methods: {
 </script>
 
 <style scoped>
-div {
+.dashboard {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  height : 730px;
+  background-image: url('@/assets/customer.jpg');
+  background-position: center; 
+  background-size: contain;
+}
+
+.form {
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+
 }
 h1 {
 font-size: 1.5em;

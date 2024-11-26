@@ -100,6 +100,13 @@
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 10px;
+  height: 700px;
+  background-color:rgb(166, 239, 247);
+  background-image: url('@/assets/admin.jpg');
+  background-position: center; 
+  background-size: contain;
+ 
+  
 }
   
 .service-table {

@@ -139,14 +139,15 @@ export default{
 
         reject(id){
           axios
-        .delete(`http://localhost:5002/api/rejectrequest/${id}`,{
+        .put(`http://localhost:5002/api/rejectrequest/${id}`,{
+          service_status : "Rejected"
         } ,{
 
           headers: { Authorization: `${this.token}` },
           })
           .then((response) => {
             if (response.status === 200) {
-              alert("Request Accepted!")
+              alert("Request Rejected!")
               location.reload()
               
               
@@ -216,6 +217,10 @@ export default{
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 10px;
+  height : 730px;
+  background-image: url('@/assets/professional.jpg');
+  background-position: center; 
+  background-size: contain;
 }
 
 h1 {

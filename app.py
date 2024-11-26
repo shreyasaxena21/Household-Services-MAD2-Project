@@ -1,3 +1,4 @@
+import base64
 import io
 from flask import Flask, Response, jsonify, request, make_response
 from backend.config import LocalDevelopmentConfig
@@ -84,7 +85,7 @@ def triggerexport():
 
 #---------------------------------------Regsitering API Endpoints-----------------------------------------------------------
 
-from backend.routes.auth import Login, Register, Logout, GetUsers, GetProfessionals, ApproveProfessionals, FlagUser, GetActiveProf, GetSpecificCustomer,GetSpecificProfessional, EditCustomerProfile, EditProfessionalProfile, Unblock, Getblockedusers
+from backend.routes.auth import Login, Register, Logout, GetUsers, GetProfessionals, ApproveProfessionals, FlagUser, GetActiveProf, GetSpecificCustomer,GetSpecificProfessional, EditCustomerProfile, EditProfessionalProfile, Unblock, Getblockedusers, AdminSearch
 api_handler.add_resource(Login, '/api/login')
 api_handler.add_resource(Register, '/api/register')
 api_handler.add_resource(Logout, '/api/logout')
@@ -99,6 +100,7 @@ api_handler.add_resource(GetSpecificProfessional, '/api/getprofessional/<int:id>
 api_handler.add_resource(EditCustomerProfile, '/api/editcustomer/<int:id>')
 api_handler.add_resource(EditProfessionalProfile, '/api/editprofessional/<int:id>')
 api_handler.add_resource(Getblockedusers, '/api/getblockedusers')
+api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
 
 
 
@@ -107,9 +109,9 @@ api_handler.add_resource(GeneralService, '/api/service')
 api_handler.add_resource(SpecificService, '/api/service/<int:id>')
 
 
-# from backend.routes.admin import Adminstats
-# # api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
-# api_handler.add_resource(Adminstats, '/api/adminstats')
+# from backend.routes.admin import AdminSearch
+# api_handler.add_resource(AdminSearch, '/api/adminsearch/<string:query>')
+# # api_handler.add_resource(Adminstats, '/api/adminstats')
 
 
 from backend.routes.service_request import CreateServiceRequest, SpecificServiceRequest, CloseServiceRequest, GetCompletedRequests, GetCustomerRequests, AcceptRequest, GetServiceRequest, RejectRequest, GetAcceptedRequests
@@ -161,7 +163,7 @@ def search(query):
         return make_response({"services":service,"user":user}),200
     return make_response({"services":[],"user":[]}),200
 
-#--------------------------------------------------------Stats-------------------------------------------------------------
+#--------------------------------------------------------Admin Stats-------------------------------------------------------------
 
 def create_pie_chart(service_counts):
     """Create and return a pie chart for services."""
@@ -181,24 +183,127 @@ def create_pie_chart(service_counts):
 
     return img_io
 
+def create_hist_graph(request_count):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(request_count, bins=range(4), edgecolor='black')
+    ax.set_xlabel('Request Status')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram of Service Requests')
+    ax.set_xticks([0, 1, 2], ['Pending', 'Assigned', 'Completed'])
+    ax.grid(True)
+
+    histimg_io = io.BytesIO()
+    fig.savefig(histimg_io, format="png")
+    histimg_io.seek(0)  # Rewind to the beginning of the BytesIO object
+    plt.close(fig)  # Close the plot to free resources
+
+    return histimg_io
+
+def create_bar_graph(user_count):
+    fig, ax = plt.subplots(figsize=(15, 10))
+    ax.barh(list(user_count.keys()), user_count.values(), color='skyblue')
+    ax.set_xlabel('Number of Users')
+    ax.set_ylabel('Role ')
+    ax.set_title('Number of User per Role')
+    ax.grid(axis='y')
+    
+
+    barimg_io = io.BytesIO()
+    fig.savefig(barimg_io, format="png")
+    barimg_io.seek(0)  # Rewind to the beginning of the BytesIO object
+    plt.close(fig)  # Close the plot to free resources
+
+    return barimg_io
+    
+
 
 def save_charts():
     """Fetch service data and generate the pie chart."""
     # Fetch all services from the Service table
     services = db.session.query(Service).all()
+    requests = db.session.query(ServiceRequest).all()
+    users = db.session.query(User).all()
 
     service_counts = {}
     for service in services:
         # Count the occurrence of each service by name
         service_counts[service.name] = service_counts.get(service.name, 0) + 1
+    
+    request_count = {}
+    for request in requests:
+        # Count the occurrence of each service request by service status
+        request_count[request.service_status] = request_count.get(request.service_status, 0) + 1
 
-    return create_pie_chart(service_counts)
+
+    user_count = {}
+    for user in users:
+        for role in user.roles:  # user.roles gives a list of Role objects
+            role_name = role.name  # Access the name attribute of the Role object
+            user_count[role_name] = user_count.get(role_name, 0) + 1
+
+    
+    pie_chart = create_pie_chart(service_counts)
+    hist_graph = create_hist_graph(request_count)
+    bar_graph = create_bar_graph(user_count)
+
+    return pie_chart, hist_graph, bar_graph
 
 @app.route("/api/showstats", methods=["GET"])
 def stats():
     """API endpoint to return the services pie chart."""
-    img_io = save_charts()
-    return Response(img_io, mimetype="image/png")
+    img_io , histimg_io, barimg_io = save_charts()
+
+    img_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+    histimg_base64 = base64.b64encode(histimg_io.getvalue()).decode('utf-8')
+    barimg_base64 = base64.b64encode(barimg_io.getvalue()).decode('utf-8')
+
+    return jsonify({"pie_chart": img_base64, "histogram": histimg_base64, "bar_graph" : barimg_base64})
+
+#----------------------------------------------------Professional Stats--------------------------------------------------------
+
+# def create_pie_chart_for_pro(request_count):
+#     """Create and return a pie chart for service requests."""
+#     fig, ax = plt.subplots(figsize=(10, 6))
+#     ax.pie(
+#         request_count.values(),
+#         labels=request_count.keys(),
+#         autopct="%1.1f%%",
+#         startangle=140,
+#     )
+#     ax.set_title("Distribution of Services Requests")
+
+#     img_io = io.BytesIO()
+#     fig.savefig(img_io, format="png")
+#     img_io.seek(0)  # Rewind to the beginning of the BytesIO object
+#     plt.close(fig)  # Close the plot to free resources
+
+#     return img_io
+
+
+# def save_charts_for_prof(id):
+#     """Fetch service data and generate the pie chart."""
+#     # Fetch all services from the Service table
+#     requests = db.session.query(ServiceRequest).filter_by(professional_id=id).all()
+
+
+#     request_count = {}
+#     for request in requests:
+#         request_count[request.service_status] = request_count.get(request.service_status, 0) + 1
+
+
+#     pie_chart = create_pie_chart_for_pro(request_count)
+   
+
+#     return  pie_chart
+
+
+# @app.route("/api/showsprofstats/<int:id>", methods=["GET"])
+# def prof_stats(id):
+#     """API endpoint to return the services pie chart."""
+#     img_io = save_charts_for_prof(id)
+#     img_io_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+   
+#     return jsonify({"pie_chart": img_io_base64})
 
 
 

@@ -1,9 +1,9 @@
 <template>
     <div class="dashboard">
-        <adminnav></adminnav>
+        <custnav></custnav>
 
         <form class="search" @submit.prevent="search">
-            <input type="text" v-model="this.search_word" class="input" placeholder="Search a professional"/><button class="search-button" @click="search()">Search</button>
+            <input type="text" v-model="this.search_word" class="input" placeholder="Search by location, service type"/><button class="search-button" @click="search()">Search</button>
         </form><br><br>
         <h2 v-if="search_word">Search Results for "{{ search_word }}"</h2>
       <ul v-if="results && results.length">
@@ -27,7 +27,6 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Type</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
-            <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
 
           </tr>
         </thead>
@@ -39,7 +38,6 @@
             <td>{{ active.service_type }}</td>
             <td>{{ active.experience }} Years</td>
 
-            <td><button type="button" id="flag" @click="block(active.id)">Block</button></td>
           </tr>
         </tbody>
       </table>
@@ -51,12 +49,12 @@
   
   <script>
 import axios from 'axios';
-import adminnav from '../components/adminnav.vue'
+import custnav from '../components/custnav.vue'
   
 export default {
-    name: "adminsearch",
+    name: "customersearch",
     components : {
-        adminnav
+        custnav
 
     },
 
@@ -134,42 +132,57 @@ export default {
       border-radius: 5px;
       height: 750px;
       background-color:rgb(166, 239, 247);
-      background-image: url('@/assets/admin.jpg');
+      background-image: url('@/assets/customer.jpg');
       background-position: center; 
       background-size: contain;
 
       
 }
 
- .service-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.service-table th,
-.service-table td {
-  padding: 10px;
-  text-align: left;
-  border: 1px solid #ddd;
-}
-
-.service-table th {
-  background-color: #3479ab;
-  color: white;
-  font-family: Georgia, "Times New Roman", Times, serif;
-}
-
-.service-table tr:nth-child(even) {
-  background-color: #f6fcfd;
-}
-
-.service-table tr:hover {
-  background-color: #fafbf7;
-}
-
+.service-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .service-table th,
+  .service-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .service-table th {
+    background-color: #b0cf19;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .service-table td {
+    background-color: #f9f9f9;
+  }
+  
+  .service-table tr:hover td {
+    background-color: #f1f1f1;
+  }
+  
+  .service-table td button,
+  .service-table td a {
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+  
+  .service-table td button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+  }
+  
 
   .search{
   display: flex;

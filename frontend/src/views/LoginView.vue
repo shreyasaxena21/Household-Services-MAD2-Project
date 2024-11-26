@@ -98,7 +98,7 @@ export default {
 
 .panel{
   height: 750px;
-  background-image: url('https://cdn.vectorstock.com/i/500p/53/49/cleaning-house-doodles-vector-1445349.jpg');
+  background-image: url('@/assets/login.jpg');
 }
 
 .container {

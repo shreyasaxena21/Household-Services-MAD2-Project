@@ -1,7 +1,8 @@
 <template>
 
-    <div class="container">
+    <div class="dashboard">
         <adminnav></adminnav>
+        <div class="form">
         <h1>Create a Service</h1>
         <form class="form">
             <input type="text" placeholder="Name for Service" v-model="this.name"><br><br>
@@ -12,6 +13,7 @@
             <input type="file" @change="addFile"><br><br>
             <button type="button" id='submit' @click="addService">Add</button>
         </form>
+    </div>
     </div>
 </template>
 
@@ -84,12 +86,28 @@ export default {
 </script>
 
 <style scoped>
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
+.dashboard {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  height : 800px;
+  background-image: url('@/assets/admin.jpg');
+  background-position: center; 
+  background-size: contain;
+}
+
+.form {
+    max-width: 700px;
+    margin: 20px auto;
     padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #f9f9f9;
-  }
+
+}
   
 
 h1 {

@@ -2,7 +2,6 @@ from flask_restful import Resource
 from flask import jsonify, make_response, request
 from flask_security import verify_password, roles_accepted, current_user, logout_user, hash_password, login_required
 from backend.models import userdatastore, db, Role,User
-import os
 
 #-----------------------------------------------Login--------------------------------------------------------------
 class Login(Resource):
@@ -49,6 +48,7 @@ class Register(Resource):
         experience = data.get('experience')
         serviceType = data.get('serviceType')
         description = data.get('description')
+        location = data.get('location')
 
         # image = request.files['image']
 
@@ -71,6 +71,7 @@ class Register(Resource):
             userdatastore.deactivate_user(user)
             userdatastore.add_role_to_user(user, 'service_professional')
             user.is_approved = 0
+            user.city = location
             # userdatastore.add_role_to_user(user, 'customer')
         userdatastore.add_role_to_user(user, role)
         db.session.commit()
@@ -147,7 +148,8 @@ class GetProfessionals(Resource):
                     'email': user.email,
                     'service_type' : user.service_type,
                     'experience' : user.experience,
-                    'description' : user.description
+                    'description' : user.description,
+                    'location' : user.city
                 }
             data.append(user1)
         print(data)
@@ -193,6 +195,39 @@ class Unblock(Resource):
         user.active = active
         db.session.commit()
         return make_response(jsonify({"message": "User Unblocked successfully"}), 200)
+    
+
+class AdminSearch(Resource):
+    @roles_accepted('admin')
+    def get(self,query):
+        # formatted_query = query.replace(" ", "").lower()
+        search = "%{}%".format(query)
+        if search:
+            print(search)
+            # services = Service.query.filter(Service.name.like(search)).all()
+            users = User.query.filter(User.fullname.like(search), User.roles.any(name='service_professional')).all()
+
+            searched_user=[]
+
+            # for service in services:
+            #     d={
+            #         "sid":service.id,
+            #         "sname":service.name,
+            #     }
+            #     service.append(d)
+
+            for user in users:
+                d={
+                    "id": user.id,
+                    "name":user.fullname,
+                    "service_type" : user.service_type 
+                }
+                searched_user.append(d)
+                return make_response(jsonify({"user":searched_user}),200)
+            return make_response(jsonify({"user":[]}),200)
+    
+     
+
     
 #-----------------------------------------------Customer--------------------------------------------------------------
 
@@ -273,6 +308,7 @@ class GetSpecificProfessional(Resource):
                 'email': user.email,
                 'service_type' : user.service_type,
                 'experience' : user.experience,
+                'location' : user.city
             }
         if not user:
             return make_response(jsonify({"message" : "No User found by that id"}), 404)
@@ -312,6 +348,7 @@ class GetActiveProf(Resource):
                     'service_type' : users.service_type,
                     'experience' : users.experience,
                     'date_created' : users.date_created,
+                    # 'location' : user.city
                     
                 }
             data.append(user1)

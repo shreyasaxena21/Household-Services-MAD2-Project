@@ -1,16 +1,18 @@
 <template>
     <div class="dashboard">
         <adminnav></adminnav>
-        <h1>Edit a Service with id: {{ this.id }}</h1>
-        <form>
-            <input type="text" placeholder="name for the service" v-model="this.name"><br><br>
-            <input type="text" placeholder="description for the category" v-model="this.description"><br><br>
-            <input type="number" placeholder="Base Price for the Service" v-model="this.price"><br><br>
-            <input type="number" placeholder="Time Required for the service in hours" v-model="this.time_required"><br><br>
-            <button type="button" id="submit" @click="addService()">Submit</button> 
-            <button type="button" id="cancel" @click="cancel()"> Cancel</button>
-        </form>
-        {{ this.message }}
+        <div class="form">
+            <h1>Edit a Service with id: {{ this.id }}</h1>
+            <form>
+                <input type="text" placeholder="name for the service" v-model="this.name"><br><br>
+                <input type="text" placeholder="description for the category" v-model="this.description"><br><br>
+                <input type="number" placeholder="Base Price for the Service" v-model="this.price"><br><br>
+                <input type="number" placeholder="Time Required for the service in hours" v-model="this.time_required"><br><br>
+                <button type="button" id="submit" @click="addService()">Submit</button> 
+                <button type="button" id="cancel" @click="cancel()"> Cancel</button>
+            </form>
+            {{ this.message }}
+        </div>
     </div>    
 </template>
 
@@ -103,6 +105,21 @@ export default{
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 10px;
+  height : 730px;
+  background-image: url('@/assets/customer.jpg');
+  background-position: center; 
+  background-size: contain;
+}
+
+.form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+
 }
 h1 {
     font-size: 1.5em;

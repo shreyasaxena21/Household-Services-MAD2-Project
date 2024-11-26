@@ -41,7 +41,7 @@ class CreateServiceRequest(Resource):
 class SpecificServiceRequest(Resource):
     @roles_accepted('admin', 'service_professional', 'customer')
     def get(self, id):
-        service_request = ServiceRequest.query.filter_by(customer_id=id ).all()  
+        service_request = ServiceRequest.query.filter_by(customer_id=id ).all() 
         data = []
         for request in service_request:
                 professional = User.query.get(request.professional_id)
@@ -66,7 +66,7 @@ class SpecificServiceRequest(Resource):
                 print(data)
                 if data == []:
                     return make_response(jsonify({"message": "No Service Request found"}), 404)
-                return make_response(jsonify({"message": "get all service requests", "data": data}), 200)
+        return make_response(jsonify({"message": "get all service requests", "data": data}), 200)
 
     
     @roles_accepted('customer')
@@ -240,12 +240,14 @@ class AcceptRequest(Resource):
 
 class RejectRequest(Resource):
     @roles_accepted('service_professional')
-    def delete(self, id):
+    def put(self, id):
+        data = request.get_json()
+        service_status = data['service_status']
         s_request = ServiceRequest.query.filter_by(id = id).first()
         if current_user.has_role('service_professional'):
-            db.session.delete(s_request)
+            s_request.service_status = service_status
             db.session.commit()
-            return jsonify({"message": "Rejected customer request", 'id': id}, 200)
+            return jsonify({"message": "Accepted customer request", 'id': id}, 200)
     
 
 

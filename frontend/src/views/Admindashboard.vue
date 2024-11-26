@@ -40,6 +40,7 @@
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Email</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Service Type</th>
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Experience</th>
+            <!-- <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Location</th> -->
             <th style="font-family: Georgia, 'Times New Roman', Times, serif;">Actions</th>
 
           </tr>
@@ -51,6 +52,7 @@
             <td>{{ active.email }}</td>
             <td>{{ active.service_type }}</td>
             <td>{{ active.experience }}</td>
+            <!-- <td>{{ active.location }}</td> -->
 
             <td><button type="button" id="flag" @click="block(active.id)">Block</button></td>
           </tr>
@@ -319,13 +321,20 @@
   </script>
   
   <style scoped>
+
   #dashboard {
       text-align: center;
       font-family: Arial, sans-serif;
       height: 100%;
       padding: 20px;
-      border-radius: 10px;
-      background-color: white;
+      border-radius: 5px;
+      height: 750px;
+      background-color:rgb(166, 239, 247);
+      background-image: url('@/assets/admin.jpg');
+      background-position: center; 
+      background-size: contain;
+      
+      
 }
   
   h1 {

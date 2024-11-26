@@ -85,6 +85,23 @@ const routes = [
     path: '/editprofessionalprofile',
     component : () => import('@/views/EditProfessionallProfile.vue')
   },
+
+  {
+    name : 'customersearch',
+    path: '/customersearch',
+    component : () => import('@/views/customersearch.vue')
+  },
+
+  {
+    name : 'profstats',
+    path: '/profstats',
+    component : () => import('@/views/showprofessionalstats.vue')
+  },
+
+  
+
+
+  
   
 ]
 

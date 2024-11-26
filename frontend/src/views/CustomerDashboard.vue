@@ -255,6 +255,10 @@ export default{
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 10px;
+  height : 770px;
+  background-image: url('@/assets/customer.jpg');
+  background-position: center; 
+  background-size: contain;
 }
 
 h1 {
