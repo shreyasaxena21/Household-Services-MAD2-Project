@@ -1,6 +1,8 @@
 # 🛠️ A-Z HouseHold Services – Home Service Platform (Multi-User Web App)
 
 **A-Z HouseHold Services** is a multi-user web application designed to serve as a platform for providing comprehensive home servicing and solutions. It supports three distinct user roles: **Admin**, **Service Professionals**, and **Customers**.
+![Home](home1.png)
+
 
 The application facilitates the complete service workflow — from service request creation to professional response and job scheduling. Each user has their own personalized dashboard to manage their activities.
 
@@ -52,17 +54,15 @@ The application facilitates the complete service workflow — from service reque
 
 ## 🖼️ Screenshots
 
-| Home Page | Login Page |
+| Login Page | Register Page |
 |--------------------|----------------------|
-| ![Customer Dashboard](https://github.com/user-attachments/assets/bdde2fe5-88e0-4b59-8ae5-40ad52d9ae66) | ![Service Request](https://github.com/user-attachments/assets/08195a97-15f4-4068-80bb-eec47324e4e3) |
+| ![Customer Dashboard](login.png) | ![Service Request](register.png) |
 
-| Register Page | Admin Dashboard |
+| Customer Dashboard | Professional Dashboard |
 |------------------------|------------------|
-| ![Professional](https://github.com/user-attachments/assets/a9990da3-017b-4e87-96ed-7f9d851f1f8d) | ![Admin](https://github.com/user-attachments/assets/578bba06-affa-4b6b-81f0-7f21415ae232) |
+| ![Professional](customer(2).png) | ![Admin](professional.png) |
 
-| Summary Page |
-|---------------------|
-| ![Email](https://github.com/user-attachments/assets/0e255f7a-7396-4e70-93c5-5af832b575b9) |
+
 
 ---
 
